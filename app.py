@@ -1,8 +1,8 @@
 from chalice import Chalice, Response, BadRequestError, NotFoundError
 from marshmallow import ValidationError
 
-from todos.models import Todo
-from todos.serializers import TodoSerializer
+from chalicelib.models import Todo
+from chalicelib.serializers import TodoSerializer
 
 
 app = Chalice(app_name='todo-chalice')
