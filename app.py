@@ -1,29 +1,44 @@
-from chalice import Chalice
+from chalice import Chalice, BadRequestError, NotFoundError
+from marshmallow import ValidationError
 
-app = Chalice(app_name='pfizer-hello')
-
-
-@app.route('/')
-def index():
-    return {'hello': 'world'}
+from todos.models import Todo
+from todos.serializers import TodoSerializer
 
 
-# The view function above will return {"hello": "world"}
-# whenever you make an HTTP GET request to '/'.
-#
-# Here are a few more examples:
-#
-# @app.route('/hello/{name}')
-# def hello_name(name):
-#    # '/hello/james' -> {"hello": "james"}
-#    return {'hello': name}
-#
-# @app.route('/users', methods=['POST'])
-# def create_user():
-#     # This is the JSON body the user sent in their POST request.
-#     user_as_json = app.current_request.json_body
-#     # We'll echo the json body back to the user in a 'user' key.
-#     return {'user': user_as_json}
-#
-# See the README documentation for more examples.
-#
+app = Chalice(app_name='todo-chalice')
+
+
+@app.route('/todos')
+def get_todos():
+    return [todo for todo in Todo.scan()]
+
+
+@app.route('/todos/{todo_id}')
+def get_todo(todo_id):
+    return Todo.query(todo_id)
+
+
+@app.route('/todos', methods=['POST'])
+def add_todo():
+    data = app.current_request.json_body
+
+    try:
+        result = TodoSerializer().load(data)
+
+    except ValidationError as err:
+        raise BadRequestError(err.messages) from err
+
+    todo = Todo(**result)
+    todo.save()
+
+    return todo
+
+
+@app.route('/todos/{todo_id}', methods=['PUT', 'PATCH'])
+def update_todo(todo_id):
+    return
+
+
+@app.route('/todos/{todo_id}', methods=['DELETE'])
+def delete_todo(todo_id):
+    return
