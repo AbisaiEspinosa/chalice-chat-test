@@ -10,7 +10,7 @@ from pynamodb.attributes import (
 
 
 class Todo(Model):
-    uid = UnicodeAttribute(hash_key=True, default=lambda: str(uuid.uuid4))
+    uid = UnicodeAttribute(hash_key=True, default=lambda: str(uuid.uuid4()))
     created = UTCDateTimeAttribute(default=datetime.datetime.now)
     started = BooleanAttribute(default=False)
     completed = BooleanAttribute(default=False)
@@ -23,4 +23,4 @@ class Todo(Model):
     @property
     def overdue(self):
         """ Returns a boolean indicating if the todo is overdue """
-        return datetime.datetime.now() > self.due_date
+        return datetime.datetime.now(self.due_date.tzinfo) > self.due_date
