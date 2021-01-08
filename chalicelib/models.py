@@ -1,6 +1,7 @@
 import datetime
 import uuid
 
+from botocore.session import Session
 from pynamodb.models import Model
 from pynamodb.attributes import (
     BooleanAttribute,
@@ -19,6 +20,7 @@ class Todo(Model):
 
     class Meta:
         table_name = 'todos'
+        region = Session().get_config_variable('region')
 
     @property
     def overdue(self):

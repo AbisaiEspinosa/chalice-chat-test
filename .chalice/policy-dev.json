@@ -20,10 +20,9 @@
           "dynamodb:Query"
         ],
         "Resource": [
-          "arn:aws:dynamodb:*:*:table/todos*"
+          "arn:aws:dynamodb:*:*:table/todos"
         ],
         "Effect": "Allow"
       }
     ]
   }
-  
